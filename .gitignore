@@ -1,5 +1,4 @@
 build/
-*.cfg
 *.weights
 *.engine
 *.pdb
@@ -9,7 +8,6 @@ data/
 *.sdf
 *.opensdf
 *.exp
-*.jpg
 *.db
 *.ipdb
 *.dll
@@ -22,3 +20,6 @@ api/
 .vs/
 .vscode/
 *.log
+*.pt
+*.onnx
+.ipynb_checkpoints

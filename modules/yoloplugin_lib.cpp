@@ -38,8 +38,9 @@ static void decodeBatchDetections(const YoloPluginCtx* ctx, std::vector<YoloPlug
         YoloPluginOutput* out = new YoloPluginOutput;
         std::vector<BBoxInfo> binfo = ctx->inferenceNetwork->decodeDetections(
             p, ctx->initParams.processingHeight, ctx->initParams.processingWidth);
-        std::vector<BBoxInfo> remaining = nmsAllClasses(
-            ctx->inferenceNetwork->getNMSThresh(), binfo, ctx->inferenceNetwork->getNumClasses());
+		std::vector<BBoxInfo> remaining;
+		/*std::vector<BBoxInfo> remaining = nmsAllClasses(
+			ctx->inferenceNetwork->getNMSThresh(), binfo, ctx->inferenceNetwork->getNumClasses(),);*/
         out->numObjects = remaining.size();
         assert(out->numObjects <= MAX_OBJECTS_PER_FRAME);
         for (uint32_t j = 0; j < remaining.size(); ++j)
@@ -99,14 +100,14 @@ YoloPluginCtx* YoloPluginCtxInit(YoloPluginInitParams* initParams, size_t batchS
     gArgV[1] = new char[512];
     strcpy(gArgV[0], "yolo_plugin_ctx");
     strcpy(gArgV[1], std::string("--flagfile=" + initParams->configFilePath).c_str());
-    yoloConfigParserInit(2, gArgV);
+//    yoloConfigParserInit(2, gArgV);
 
     YoloPluginCtx* ctx = new YoloPluginCtx;
     ctx->initParams = *initParams;
     ctx->batchSize = batchSize;
-    ctx->networkInfo = getYoloNetworkInfo();
-    ctx->inferParams = getYoloInferParams();
-    uint32_t configBatchSize = getBatchSize();
+	ctx->networkInfo;// = getYoloNetworkInfo();
+	ctx->inferParams;// = getYoloInferParams();
+	uint32_t configBatchSize;// = getBatchSize();
 
     // Check if config batchsize matches buffer batch size in the pipeline
     if (ctx->batchSize != configBatchSize)

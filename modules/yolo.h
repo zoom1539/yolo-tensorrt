@@ -31,10 +31,16 @@ SOFTWARE.
 #include "trt_utils.h"
 
 #include "NvInfer.h"
-
+#include "NvInferPlugin.h"
+#include "NvInferRuntimeCommon.h"
+#include "cuda_runtime_api.h"
 #include <stdint.h>
 #include <string>
 #include <vector>
+#include "class_timer.hpp"
+#include "opencv2/opencv.hpp"
+#include "detect.h"
+//#include "logging.h"
 
 /**
  * Holds all the file paths required to build a network.
@@ -72,7 +78,11 @@ struct TensorInfo
 {
     std::string blobName;
     uint32_t stride{0};
+    uint32_t stride_h{0};
+    uint32_t stride_w{0};
     uint32_t gridSize{0};
+	uint32_t grid_h{ 0 };
+	uint32_t grid_w{ 0 };
     uint32_t numClasses{0};
     uint32_t numBBoxes{0};
     uint64_t volume{0};
@@ -81,6 +91,7 @@ struct TensorInfo
     int bindingIndex{-1};
     float* hostBuffer{nullptr};
 };
+
 
 class Yolo
 {
@@ -91,11 +102,12 @@ public:
     int getClassId(const int& label) const { return m_ClassIds.at(label); }
     uint32_t getInputH() const { return m_InputH; }
     uint32_t getInputW() const { return m_InputW; }
-    uint32_t getNumClasses() const { return m_ClassNames.size(); }
+    uint32_t getNumClasses() const { return static_cast<uint32_t>(m_ClassNames.size()); }
     bool isPrintPredictions() const { return m_PrintPredictions; }
     bool isPrintPerfInfo() const { return m_PrintPerfInfo; }
     void doInference(const unsigned char* input, const uint32_t batchSize);
-    std::vector<BBoxInfo> decodeDetections(const int& imageIdx, const int& imageH,
+    std::vector<BBoxInfo> decodeDetections(const int& imageIdx,
+											const int& imageH,
                                            const int& imageW);
 
     virtual ~Yolo();
@@ -119,6 +131,9 @@ protected:
     uint32_t m_InputW;
     uint32_t m_InputC;
     uint64_t m_InputSize;
+	uint32_t _n_classes = 0;
+	float _f_depth_multiple = 0;
+	float _f_width_multiple = 0;
     const float m_ProbThresh;
     const float m_NMSThresh;
     std::vector<std::string> m_ClassNames;
@@ -130,12 +145,11 @@ protected:
         67, 70, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 84, 85, 86, 87, 88, 89, 90};
     const bool m_PrintPerfInfo;
     const bool m_PrintPredictions;
-    Logger m_Logger;
-
     // TRT specific members
+	//Logger glogger;
     const uint32_t m_BatchSize;
     nvinfer1::INetworkDefinition* m_Network;
-    nvinfer1::IBuilder* m_Builder;
+    nvinfer1::IBuilder* m_Builder ;
     nvinfer1::IHostMemory* m_ModelStream;
     nvinfer1::ICudaEngine* m_Engine;
     nvinfer1::IExecutionContext* m_Context;
@@ -166,17 +180,25 @@ protected:
         bbi.prob = maxProb;
         bbi.classId = getClassId(maxIndex);
         binfo.push_back(bbi);
-    };
+    }
 
 private:
+    Logger m_Logger;
     void createYOLOEngine(const nvinfer1::DataType dataType = nvinfer1::DataType::kFLOAT,
                           Int8EntropyCalibrator* calibrator = nullptr);
+	void create_engine_yolov5(const nvinfer1::DataType dataType = nvinfer1::DataType::kFLOAT,
+		Int8EntropyCalibrator* calibrator = nullptr);
     std::vector<std::map<std::string, std::string>> parseConfigFile(const std::string cfgFilePath);
     void parseConfigBlocks();
+	void parse_cfg_blocks_v5(const  std::vector<std::map<std::string, std::string>> &vec_block_);
     void allocateBuffers();
     bool verifyYoloEngine();
     void destroyNetworkUtils(std::vector<nvinfer1::Weights>& trtWeights);
     void writePlanFileToDisk();
+
+private:
+	Timer _timer;
+	void load_weights_v5(const std::string s_weights_path_, std::map<std::string, std::vector<float>> &vec_wts_);
 };
 
 #endif // _YOLO_H_
