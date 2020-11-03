@@ -27,9 +27,9 @@ enum ModelType
 
 enum Precision
 {
-	INT8 = 0,
-	FP16,
-	FP32
+	TRT_INT8 = 0,
+	TRT_FP16,
+	TRT_FP32
 };
 
 struct Config
@@ -42,7 +42,7 @@ struct Config
 
 	ModelType	net_type						= YOLOV3;
 
-	Precision	inference_precison				= FP32;
+	Precision	inference_precison				= TRT_FP32;
 	
 	int	gpu_id									= 0;
 

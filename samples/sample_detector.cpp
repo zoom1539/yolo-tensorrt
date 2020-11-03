@@ -9,8 +9,8 @@ int main()
 {
 	Config config_v3;
 	config_v3.net_type = YOLOV3;
-	config_v3.file_model_cfg = "../configs/yolov3.cfg";
-	config_v3.file_model_weights = "../configs/yolov3.weights";
+	config_v3.file_model_cfg = "../configs/yolov3_c4.cfg";
+	config_v3.file_model_weights = "../configs/yolov3_c4.weights";
 	config_v3.calibration_image_list_file_txt = "../configs/calibration_images.txt";
 	config_v3.inference_precison = FP32;
 
@@ -44,10 +44,10 @@ int main()
 	config_v5.inference_precison = FP32;
 	//config_v5.n_max_batch = 2;
 
-	cv::Mat image0 = cv::imread("../configs/dog.jpg", cv::IMREAD_UNCHANGED);
-	cv::Mat image1 = cv::imread("../configs/person.jpg", cv::IMREAD_UNCHANGED);
+	cv::Mat image0 = cv::imread("../configs/mag1.jpg", cv::IMREAD_UNCHANGED);
+	cv::Mat image1 = cv::imread("../configs/mag2.jpg", cv::IMREAD_UNCHANGED);
 	std::unique_ptr<Detector> detector(new Detector());
-	detector->init(config_v5);
+	detector->init(config_v3);
 	std::vector<BatchResult> batch_res;
 	Timer timer;
 	for (;;)
