@@ -50,13 +50,13 @@ int main()
 	detector->init(config_v4);
 	std::vector<BatchResult> batch_res;
 	Timer timer;
-	for (;;)
+	for (int i = 0; i < 10; i++)
 	{
 		//prepare batch data
 		std::vector<cv::Mat> batch_img;
 		cv::Mat temp0 = image0.clone();
 		cv::Mat temp1 = image1.clone();
-		batch_img.push_back(temp0);
+		//batch_img.push_back(temp0);
 		batch_img.push_back(temp1);
 
 		//detect
@@ -79,4 +79,5 @@ int main()
 		}
 		cv::waitKey(10);
 	}
+	std::cin.get();
 }
