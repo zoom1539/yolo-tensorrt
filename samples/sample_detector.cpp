@@ -56,7 +56,7 @@ int main()
 		std::vector<cv::Mat> batch_img;
 		cv::Mat temp0 = image0.clone();
 		cv::Mat temp1 = image1.clone();
-		//batch_img.push_back(temp0);
+		batch_img.push_back(temp0);
 		//batch_img.push_back(temp1);
 
 		//detect
