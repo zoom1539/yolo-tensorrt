@@ -77,7 +77,8 @@ int main()
 			}
 			cv::imshow("image"+std::to_string(i), batch_img[i]);
 		}
-		cv::waitKey(10);
+
+		cv::waitKey();
 	}
 	std::cin.get();
 }
