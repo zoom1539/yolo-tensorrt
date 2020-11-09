@@ -24,8 +24,8 @@ int main()
 
 	Config config_v4;
 	config_v4.net_type = YOLOV4;
-	config_v4.file_model_cfg = "D:/yolo-tensorrt/configs/yolov4/yolov4.cfg";
-	config_v4.file_model_weights = "D:/yolo-tensorrt/configs/yolov4/yolov4.weights";
+	config_v4.file_model_cfg = "../configs/yolov4.cfg";
+	config_v4.file_model_weights = "../configs/yolov4.weights";
 	config_v4.inference_precison = TRT_FP32;
 
 	Config config_v4_tiny;
@@ -44,8 +44,8 @@ int main()
 	config_v5.inference_precison = TRT_FP32;
 	//config_v5.n_max_batch = 2;
 
-	cv::Mat image0 = cv::imread("D:/yolo-tensorrt/configs/person.jpg", cv::IMREAD_UNCHANGED);
-	cv::Mat image1 = cv::imread("D:/yolo-tensorrt/configs/dog.jpg", cv::IMREAD_UNCHANGED);
+	cv::Mat image0 = cv::imread("../configs/person.jpg", cv::IMREAD_UNCHANGED);
+	cv::Mat image1 = cv::imread("../configs/dog.jpg", cv::IMREAD_UNCHANGED);
 	std::unique_ptr<Detector> detector(new Detector());
 	detector->init(config_v4);
 	std::vector<BatchResult> batch_res;
@@ -64,8 +64,9 @@ int main()
 		detector->detect(batch_img, batch_res);
 		timer.out("detect");
 
+		std::cin.get();
 		//disp
-		for (int i=0;i<batch_img.size();++i)
+		/*for (int i=0;i<batch_img.size();++i)
 		{
 			for (const auto &r : batch_res[i])
 			{
@@ -78,7 +79,7 @@ int main()
 			cv::imshow("image"+std::to_string(i), batch_img[i]);
 		}
 
-		cv::waitKey();
+		cv::waitKey();*/
 	}
 	std::cin.get();
 }
