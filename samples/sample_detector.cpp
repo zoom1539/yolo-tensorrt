@@ -24,8 +24,8 @@ int main()
 
 	Config config_v4;
 	config_v4.net_type = YOLOV4;
-	config_v4.file_model_cfg = "../configs/yolov4.cfg";
-	config_v4.file_model_weights = "../configs/yolov4.weights";
+	config_v4.file_model_cfg = "../configs/yolov4/yolov4.cfg";
+	config_v4.file_model_weights = "../configs/yolov4/yolov4.weights";
 	config_v4.inference_precison = TRT_FP32;
 
 	Config config_v4_tiny;
